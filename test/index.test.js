@@ -114,57 +114,17 @@ describe('updateTimer', () => {
   });
 
   test('it should switch from work to long break afte each 4 work sessions', () => {
-    document.body.innerHTML = template;
-    const app = new App();
-    const now = moment();
-    const startOfToday = now.startOf('day');
-    app.startButton.disabled = true;
-    app.stopButton.disabled = false;
-    app.isTimerStopped = false;
-    app.tempCycles = 3;
-    app.startAt = startOfToday;
-    const endAt = moment(startOfToday).add(25, 'minutes');
-    app.endAt = endAt;
-    app.updateTimer(moment(startOfToday).add(25, 'minutes').add(100, 'millisecond'));
-    const timeDisplay = document.getElementById('time-display');
-    expect(timeDisplay.innerHTML).toEqual('15:00');
-    expect(app.onWork).not.toBeTruthy();
-    expect(app.tempCycles).toEqual(0);
+    
   });
 
   test('it should switch from break to start after break end', () => {
-    document.body.innerHTML = template;
-    const app = new App();
-    const now = moment();
-    const startOfToday = now.startOf('day');
-    app.onWork = false;
-    app.startButton.disabled = true;
-    app.stopButton.disabled = false;
-    app.isTimerStopped = false;
-    app.startAt = startOfToday;
-    app.endAt = moment(startOfToday).add(5, 'minutes');
-    app.updateTimer(moment(startOfToday).add(5, 'minutes').add(100, 'millisecond'));
-    const timeDisplay = document.getElementById('time-display');
-    expect(timeDisplay.innerHTML).toEqual('25:00');
-    expect(app.onWork).toBeTruthy();
+    
   });
 });
 
 describe('pauseTimer', () => {
   test('it should update the button status', () => {
-    document.body.innerHTML = template;
-    const app = new App();
-    const now = moment();
-    const startOfToday = now.startOf('day');
-    app.startButton.disabled = true;
-    app.stopButton.disabled = false;
-    app.isTimerStopped = false;
-    app.startAt = startOfToday;
-    app.endAt = moment(startOfToday).add(25, 'minutes');
-    app.pauseTimer(null, moment(startOfToday).add(15, 'minute'));
-    expect(app.startButton.disabled).not.toBeTruthy();
-    expect(app.timerUpdater).toBe(null);
-    expect(app.pausedAt.valueOf()).toEqual(moment(app.startAt.add(15, 'minute')).valueOf());
+    
   });
 });
 
