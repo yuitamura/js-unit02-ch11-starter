@@ -16,6 +16,8 @@ class App {
     this.saveIntervalData = this.saveIntervalData.bind(this);
     this.displayCyclesToday = this.displayCyclesToday.bind(this);
     this.displayHistory = this.displayHistory.bind(this);
+    this.longBreakLength = 15; // 15分間のブレイク
+    this.tempCycles = 0; // 作業完了回数
 
     this.resetValues();
     this.getElements();
@@ -54,6 +56,7 @@ class App {
     this.historyDisplay = document.getElementById('history');
     this.startButton = document.getElementById('start-button');
     this.stopButton = document.getElementById('stop-button');
+    this.pauseButton = document.getElementById('pause-button');
   }
 
   resetValues() {
@@ -63,6 +66,7 @@ class App {
     this.endAt = null;
     this.isTimerStopped = true;
     this.onWork = true;
+    this.pausedAt = null;
   }
 
   toggleEvents() {
@@ -81,9 +85,15 @@ class App {
     if (e) e.preventDefault();
     this.startButton.disabled = true;
     this.stopButton.disabled = false;
+    this.pauseButton.disabled = false;
     this.isTimerStopped = false;
     this.startAt = time;
     const startAtClone = moment(this.startAt);
+    if (this.pausedAt) {
+      this.endAt = this.pausedAt.diff(time);
+    } else {
+      
+    }
     this.endAt = startAtClone.add(this.workLength, 'minutes');
     this.timerUpdater = window.setInterval(this.updateTimer, 500);
     // タイムラグがあるので、0.5秒ごとにアップデートします。
@@ -98,10 +108,17 @@ class App {
         this.displayCyclesToday();
         this.displayHistory();
       }
-      this.onWork = !this.onWork;
+      this.onWork = !this.onWork; // 反転の演算子 = false
       this.startAt = time;
-      this.endAt = this.onWork ? moment(time).add(this.workLength, 'minutes')
-        : moment(time).add(this.breakLength, 'minutes');
+      if (this.onWork) this.endAt = moment(time).add(this.workLength, 'minutes'); // elseで返すものはなにもない、{}省略可能
+      if (this.tempCycles === 4) {
+        this.endAt = moment(time).add(this.longBreakLength, 'minutes');
+        this.tempCycles = 0;
+      } else {
+        this.endAt = moment(time).add(this.breakLength, 'minutes');
+        // this.tempCycles = this.tempCycles + 1;
+        this.tempCycles += 1; // this.tempCycles + 1の省略
+      }
     }
     this.displayTime(time);
   }
