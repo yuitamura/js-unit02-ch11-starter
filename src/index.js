@@ -86,10 +86,10 @@ class App {
     this.startButton.disabled = true;
     this.stopButton.disabled = false;
     this.pauseButton.disabled = false;
-    if (this.pausedAt == true) {
+    if (this.pausedAt) {
+      this.isTimerStopped = true;
       const diff = moment(time).diff(this.pausedAt);
       this.endAt = this.endAt.add(diff, 'millisecond');
-      this.pauseButton.disabled = true;
     } else {
       this.isTimerStopped = false;
       this.startAt = time;
