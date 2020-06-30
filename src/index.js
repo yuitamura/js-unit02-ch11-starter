@@ -16,8 +16,7 @@ class App {
     this.saveIntervalData = this.saveIntervalData.bind(this);
     this.displayCyclesToday = this.displayCyclesToday.bind(this);
     this.displayHistory = this.displayHistory.bind(this);
-    this.longBreakLength = 15; // 15分間のブレイク
-    this.tempCycles = 0; // 作業完了回数
+    this.pauseTimer = this.pauseTimer.bind(this);
 
     this.resetValues();
     this.getElements();
@@ -67,11 +66,14 @@ class App {
     this.isTimerStopped = true;
     this.onWork = true;
     this.pausedAt = null;
+    this.longBreakLength = 15; // 15分間のブレイク
+    this.tempCycles = 0; // 作業完了回数
   }
 
   toggleEvents() {
     this.startButton.addEventListener('click', this.startTimer);
     this.stopButton.addEventListener('click', this.stopTimer);
+    this.pauseButton.addEventListener('click', this.pauseTimer);
   }
 
   saveIntervalData(momentItem) {
@@ -99,6 +101,17 @@ class App {
     this.timerUpdater = window.setInterval(this.updateTimer, 500);
     // タイムラグがあるので、0.5秒ごとにアップデートします。
     this.displayTime();
+  }
+
+  pauseTimer(e = null, time = moment()) {
+    if (e) e.preventDefault();
+    this.startButton.disabled = false;
+    this.stopButton.disabled = true;
+    this.pauseButton.disabled = true;
+    this.pausedAt = time;
+    window.clearInterval(this.timerUpdater);
+    this.timerUpdater = null;
+    // updateTimerを呼ばないようにする
   }
 
   updateTimer(time = moment()) {
@@ -133,6 +146,7 @@ class App {
     this.resetValues();
     this.startButton.disabled = false;
     this.stopButton.disabled = true;
+    this.pauseButton.disabled = true;
     window.clearInterval(this.timerUpdater);
     this.timerUpdater = null;
     this.displayTime();
